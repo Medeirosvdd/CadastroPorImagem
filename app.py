@@ -1,9 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS 
-import cv2
-import easyocr
-import numpy as np
-import base64
 import os
 import psycopg2
 from datetime import datetime
@@ -12,21 +8,20 @@ app = Flask(__name__)
 CORS(app)
 
 # Configurações
-reader = easyocr.Reader(['pt'], gpu=False)
 sala_atual = 'Sala 1'
 gaveta_atual = 'Gaveta 1'
 
-# Conexão com o banco
+# Conexão com o banco "Leitor-de-img"
 def get_db_connection():
     return psycopg2.connect(
         host=os.environ.get('DB_HOST'),
-        database=os.environ.get('DB_NAME'),
+        database=os.environ.get('DB_NAME'),  # Vai pegar "Leitor-de-img"
         user=os.environ.get('DB_USER'),
         password=os.environ.get('DB_PASSWORD'),
         port=os.environ.get('DB_PORT')
     )
 
-# Inicializar banco
+# Inicializar banco - cria tabelas automaticamente
 def init_db():
     try:
         conn = get_db_connection()
@@ -87,19 +82,12 @@ def init_db():
     except Exception as e:
         print(f"❌ Erro ao inicializar banco: {e}")
 
-# Funções de processamento de imagem
-def preprocessar_imagem(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    gray = cv2.medianBlur(gray, 3)
-    return gray
-
-def extrair_texto(imagem):
-    try:
-        resultado = reader.readtext(imagem, detail=0)
-        texto = " ".join(resultado).strip()
-        return texto if texto else "Nenhum texto detectado"
-    except Exception as e:
-        return f"Erro no OCR: {e}"
+# Função de OCR SIMULADA (por enquanto)
+def extrair_texto(imagem_data):
+    # Simula OCR - depois adicionamos o real
+    nomes_simulados = ["João Silva", "Maria Santos", "Pedro Costa", "Ana Oliveira"]
+    import random
+    return random.choice(nomes_simulados)
 
 # Rotas
 @app.route('/')
@@ -152,17 +140,8 @@ def set_sala_gaveta():
 def processar_imagem():
     try:
         data = request.get_json()
-        image_data = data['imagem']
-        header, encoded = image_data.split(",", 1)
-        binary_data = base64.b64decode(encoded)
-        nparr = np.frombuffer(binary_data, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        if img is None:
-            return jsonify({'success': False, 'error': 'Não foi possível decodificar a imagem'})
-            
-        img_processada = preprocessar_imagem(img)
-        nome_detectado = extrair_texto(img_processada)
+        # Simula processamento por enquanto
+        nome_detectado = extrair_texto(None)
         
         return jsonify({
             'success': True,
@@ -219,5 +198,5 @@ def confirmar_nome():
         })
 
 if __name__ == '__main__':
-    init_db()
+    init_db()  # Cria as tabelas automaticamente
     app.run(debug=True, host='0.0.0.0', port=5000)
