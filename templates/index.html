@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Digitalização de Pastas</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📁 Sistema de Digitalização de Pastas</h1>
+            <div class="status">
+                <span id="status-sala">Sala: <strong>{{ sala_atual }}</strong></span>
+                <span id="status-gaveta">Gaveta: <strong>{{ gaveta_atual }}</strong></span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Painel de Controle -->
+            <div class="control-panel">
+                <h2>🎛️ Controle</h2>
+
+                <div class="selection-section">
+                    <label for="sala-select">Selecionar Sala:</label>
+                    <select id="sala-select">
+                        <option value="Sala 1">Sala 1</option>
+                        <option value="Sala 2">Sala 2</option>
+                        <option value="Sala 3">Sala 3</option>
+                    </select>
+
+                    <label for="gaveta-select">Selecionar Gaveta:</label>
+                    <select id="gaveta-select">
+                        <!-- Gavetas serão preenchidas via JavaScript -->
+                    </select>
+
+                    <button id="btn-atualizar" class="btn btn-primary">🔄 Atualizar Seleção</button>
+                </div>
+
+                <div class="camera-section">
+                    <h3>📷 Câmera</h3>
+                    <div class="video-container">
+                        <video id="video" autoplay playsinline></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+                    <button id="btn-capturar" class="btn btn-success">📸 Capturar Imagem</button>
+                </div>
+            </div>
+
+            <!-- Painel de Informações -->
+            <div class="info-panel">
+                <h2>📊 Informações</h2>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3>Progresso Geral</h3>
+                        <div id="progresso-geral">0/9 gavetas</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Gaveta Atual</h3>
+                        <div id="contador-gaveta">0 pastas</div>
+                    </div>
+                </div>
+
+                <div class="historico">
+                    <h3>📋 Pastas na Gaveta Atual</h3>
+                    <div id="lista-pastas" class="lista-pastas">
+                        <!-- Lista será preenchida via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="ultimo-scan">
+                    <h3>🔍 Última Detecção</h3>
+                    <div id="ultimo-nome" class="ultimo-nome">Nenhuma detecção ainda</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <h2>✅ Confirmar Nome do Aluno</h2>
+
+            <div class="modal-body">
+                <label for="nome-input">Nome detectado:</label>
+                <input type="text" id="nome-input" placeholder="Digite ou corrija o nome aqui...">
+
+                <div class="modal-buttons">
+                    <button id="btn-confirmar" class="btn btn-success">✅ Confirmar</button>
+                    <button id="btn-refazer" class="btn btn-warning">🔄 Refazer Captura</button>
+                    <button id="btn-cancelar" class="btn btn-danger">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/script.js"></script>
+</body>
+
+</html>
